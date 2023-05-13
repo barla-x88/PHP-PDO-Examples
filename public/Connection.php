@@ -27,17 +27,37 @@ try {
     throw new PDOException($PDOException->getMessage(), (int) $PDOException->getCode());
 }
 
-//fetching data from database
+//Inserting data into database
+$stmt = $pdo->prepare('INSERT INTO users (name, email) VALUES (:name, :email)');
 
-//prepare a statement using prepare method, '?' is placeholder
-$stmt = $pdo->prepare('SELECT email FROM users where name LIKE ?');
+$person_array = [
+    ["John Doe", "johndoe@example.com"],
+    ["Jane Smith", "janesmith@example.com"],
+    ["Michael Johnson", "michaeljohnson@example.com"],
+    ["Emily Davis", "emilydavis@example.com"],
+    ["Robert Wilson", "robertwilson@example.com"],
+    ["Sarah Thompson", "sarahthompson@example.com"],
+    ["David Brown", "davidbrown@example.com"],
+    ["Jennifer Lee", "jenniferlee@example.com"],
+    ["Christopher Taylor", "christophertaylor@example.com"],
+    ["Amanda Clark", "amandaclark@example.com"]
+];
 
-//placeholder values
-$searchString = '%' . 'JOHN' . '%';
+//using loop to insert all
+//destructuring at the same time
+foreach($person_array as [$person, $email]) {
+    // echo $person . ' ' . $email . "\n";
+    $stmt->execute(['name' => $person, 'email' => $email]);
+}
 
-//call the execute method on the statement object
-//supply an array which contain placeholder values 
-//in the same order as they appear in query
-$stmt->execute([$searchString]);
-
-VarDumper::dump($stmt->fetch());
+//Get no of rows inserted
+/**
+ * $num_rows_inserted = 0;
+*
+*foreach($person_array as [$person, $email]) {
+*    $stmt->execute(['name' => $person, 'email' => $email]);
+*    $num_rows_inserted += $stmt->rowCount();
+*}
+*
+*echo "The number of rows inserted is $num_rows_inserted";
+ */
