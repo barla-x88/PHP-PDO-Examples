@@ -29,14 +29,15 @@ try {
 
 //fetching data from database
 
-//prepare a statement first
-$stmt = $pdo->query('SELECT name, email FROM users');
+//prepare a statement using prepare method, '?' is placeholder
+$stmt = $pdo->prepare('SELECT email FROM users where name LIKE ?');
 
+//placeholder values
+$searchString = '%' . 'JOHN' . '%';
 
-//calling fetch method on statement
-//fetch() returns a single row every time it is executed
-//on next call it returns the next row
-while ($row = $stmt->fetch()) {
-    echo $row['name'] . '  ' . $row['email']. "\n";
-}
+//call the execute method on the statement object
+//supply an array which contain placeholder values 
+//in the same order as they appear in query
+$stmt->execute([$searchString]);
 
+VarDumper::dump($stmt->fetch());
