@@ -27,20 +27,22 @@ try {
     throw new PDOException($PDOException->getMessage(), (int) $PDOException->getCode());
 }
 
-// //looping through the object
-// $stmt = $pdo->query('SELECT name, email FROM users');
+//creating objects from the fetched records
+//using fetchAll() method to fetch multiple records at once
 
-// foreach ($stmt as $row) {
-//     echo $row['name'] . '  ' . $row['email'] . "\n";
-// }
+class User
+{
+    private int $id;
+    private string $name;
+    private string $email;
+    private string $created_at;
+}
 
-//fetch single column
-$stmt2 = $pdo->prepare('SELECT name FROM users WHERE id = :id');
-$stmt2->execute(['id' => 8]);
+$stmt = $pdo->query('SELECT * from users');
 
-echo "user = " . $stmt2->fetchColumn() . "\n";
+//PDO::FETCH_CLASS -> Specifies that the fetch method shall return a
+//  new instance of the requested class, mapping the columns to named
+//  properties in the class.
+$allUser = $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
 
-//count users 
-$countStmt = $pdo->prepare('SELECT count(*) FROM users');
-$countStmt->execute();
-echo "Total user = " . $countStmt->fetchColumn() . "\n";
+dd($allUser);
