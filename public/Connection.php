@@ -27,18 +27,20 @@ try {
     throw new PDOException($PDOException->getMessage(), (int) $PDOException->getCode());
 }
 
-//updating data
-$stmt = $pdo->prepare("UPDATE users SET email = :email WHERE id = :id");
+// //looping through the object
+// $stmt = $pdo->query('SELECT name, email FROM users');
 
+// foreach ($stmt as $row) {
+//     echo $row['name'] . '  ' . $row['email'] . "\n";
+// }
 
-$stmt->execute(['email' => 'johnsmith09@microsoft.com', 'id' => 1]);
+//fetch single column
+$stmt2 = $pdo->prepare('SELECT name FROM users WHERE id = :id');
+$stmt2->execute(['id' => 8]);
 
-echo "row affected : " . $stmt->rowCount() . "\n";
+echo "user = " . $stmt2->fetchColumn() . "\n";
 
-//deleting data
-$deleteStmt = $pdo->prepare("DELETE FROM users WHERE id = :id");
-
-//delete amanda, id = 12
-
-$deleteStmt->execute(['id' => 12]);
-echo "row affected : " . $deleteStmt->rowCount() . "\n";
+//count users 
+$countStmt = $pdo->prepare('SELECT count(*) FROM users');
+$countStmt->execute();
+echo "Total user = " . $countStmt->fetchColumn() . "\n";
