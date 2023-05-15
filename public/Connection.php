@@ -27,37 +27,18 @@ try {
     throw new PDOException($PDOException->getMessage(), (int) $PDOException->getCode());
 }
 
-//Inserting data into database
-$stmt = $pdo->prepare('INSERT INTO users (name, email) VALUES (:name, :email)');
+//updating data
+$stmt = $pdo->prepare("UPDATE users SET email = :email WHERE id = :id");
 
-$person_array = [
-    ["John Doe", "johndoe@example.com"],
-    ["Jane Smith", "janesmith@example.com"],
-    ["Michael Johnson", "michaeljohnson@example.com"],
-    ["Emily Davis", "emilydavis@example.com"],
-    ["Robert Wilson", "robertwilson@example.com"],
-    ["Sarah Thompson", "sarahthompson@example.com"],
-    ["David Brown", "davidbrown@example.com"],
-    ["Jennifer Lee", "jenniferlee@example.com"],
-    ["Christopher Taylor", "christophertaylor@example.com"],
-    ["Amanda Clark", "amandaclark@example.com"]
-];
 
-//using loop to insert all
-//destructuring at the same time
-foreach($person_array as [$person, $email]) {
-    // echo $person . ' ' . $email . "\n";
-    $stmt->execute(['name' => $person, 'email' => $email]);
-}
+$stmt->execute(['email' => 'johnsmith09@microsoft.com', 'id' => 1]);
 
-//Get no of rows inserted
-/**
- * $num_rows_inserted = 0;
-*
-*foreach($person_array as [$person, $email]) {
-*    $stmt->execute(['name' => $person, 'email' => $email]);
-*    $num_rows_inserted += $stmt->rowCount();
-*}
-*
-*echo "The number of rows inserted is $num_rows_inserted";
- */
+echo "row affected : " . $stmt->rowCount() . "\n";
+
+//deleting data
+$deleteStmt = $pdo->prepare("DELETE FROM users WHERE id = :id");
+
+//delete amanda, id = 12
+
+$deleteStmt->execute(['id' => 12]);
+echo "row affected : " . $deleteStmt->rowCount() . "\n";
