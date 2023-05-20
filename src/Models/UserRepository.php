@@ -18,9 +18,10 @@ class UserRepository
     {
         $name = $userdata['name'];
         $email = $userdata['email'];
+        $user_timezone = $userdata['user_timezone'];
 
-        $stmt = $this->pdo->prepare('INSERT INTO users (name, email) VALUES (:name, :email)');
-        $stmt->execute(['name' => $name, 'email' => $email]);
+        $stmt = $this->pdo->prepare('INSERT INTO users (name, email, user_timezone) VALUES (:name, :email, :user_timezone)');
+        $stmt->execute(['name' => $name, 'email' => $email, 'user_timezone' => $user_timezone]);
     
         $rowCount = $stmt->rowCount();
 
