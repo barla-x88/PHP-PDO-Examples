@@ -14,6 +14,9 @@
             text-align: center;
         }
 
+    </style>
+</head>
+<body>
         <?php
 
             use App\Models\UserRepository;
@@ -25,9 +28,6 @@
 
             $users = $repo->getAllUser();
         ?>
-    </style>
-</head>
-<body>
     <table>
         <thead>
             <tr>
@@ -41,11 +41,11 @@
         <tbody>
             <?php foreach($users as $user): ?>
                     <tr>
-                        <td><?php echo $user->getId()?></td>
-                        <td><?php echo $user->getName()?></td>
+                        <td><?php echo $user->id ?></td>
+                        <td><?php echo $user->name ?></td>
                         <td><?php echo $user->getLocalTime()?></td>
                         <td><?php echo $user->getAccountAge()?></td>
-                        <td>bsghesg</td>
+                        <td><?php echo $user->isActive() ? 'YES' : 'NO' ?></td>
                     </tr>
             <?php endforeach; ?>
         </tbody>

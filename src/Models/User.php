@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DateInterval;
 use DateTimeZone;
 use DateTime;
 
@@ -10,93 +11,71 @@ class User
     private int $id;
     private string $name;
     private string $email;
-    private string $userTimezone;
+    private string $user_timezone;
+
+    //can be DateTime object or string
     private DateTime|string $created_at;
     private DateTime|string $updated_at;
-    private \DateTime $localTime;
-    Private \DateInterval $accountAge;
-    private Bool $accountActive = true;
+    private DateInterval $accountAge;
 
 
-    public function getId(): int
+    //using magic getter to get properties out of object
+    public function __get($property)
     {
-        return $this->id;
+        //check if property exists
+        if (property_exists($this, $property)) {
+            return $this->$property;
+        }
     }
+
+    //used in find-user.php
     public function setId($id): void
     {
         $this->id = $id;
     }
     
-
-    //
-    public function getName(): string
-    {
-        return $this->name;
-    }
     public function setName($name): void
     {
         $this->name = $name;
     }
-
-    //
     public function setEmail($email): void
     {
         $this->email = $email;
-    }
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-
-    //
-    public function setUserTimezone($user_timezone): void
-    {
-        $this->userTimezone = $user_timezone;
-    }
-
-    //
-    public function getCreatedAt(): string
-    {
-        return $this->created_at->format("F j, Y, g:i a");
     }
     public function setCreatedAt($time): void
     {
         $this->created_at = date_create($time);
     }
-    
-    //depends on created_at
-    //depends on userTimezone
+    // above methods are used in find-user.php
+
+
     public function getAccountAge(): string
     {
+        //call setCreatedAt to convert string to DateTime object
+        $this->setCreatedAt($this->created_at);
+
+        $this->accountAge = $this->created_at->diff(new DateTime('now'));
 
         return $this->accountAge->format("%d days, %m months");
-    }
-    public function setAccountAge(): void
-    {
-        $age = $this->created_at->diff(new DateTime('now'));
-        $this->accountAge = $age;
-    }
-
-
-    //
-    public function setLocalTime(): void
-    {
-        $time = new DateTime('now', new DateTimeZone($this->userTimezone));
-        $this->localTime = $time;
     }
 
     public function getLocalTime(): string
     {
-       return $this->localTime->format("F j, Y, g:i a");
+        
+        $time = new DateTime('now', new DateTimeZone($this->user_timezone));
+       return $time->format("g:i a");
     }
 
-    public function setUpdatedAt($time): void
+    public function isActive(): bool
     {
-        $this->updated_at = date_create($time);
+        $currentAge = $this->accountAge->days;
+        $updateInterval = date_create($this->updated_at)->diff(date_create()); 
+        if ($currentAge < 90 || ($this->currentAge >= 90 && $updateInterval->days < 90)) {
+            return true;
+        } else {
+            return false;
+        }
     }
-    public function getUpdatedAt(): string
-    {
-       return $this->updated_at->format("F j, Y, g:i a");
-    }
+
+
 }

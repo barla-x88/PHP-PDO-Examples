@@ -77,36 +77,18 @@ class UserRepository
     }
 
     //get all users
-    //create user objects
-    //display all users
+    //create user object
     public function getAllUser() : ?Array
     {
         $stmt = $this->pdo->prepare('SELECT * from users');
         $stmt->execute();
-        $userArray = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $userArray = $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
 
         if (!$userArray) {
             return null;
         }
 
-        $userObjs = [];
-        
-        foreach($userArray as $key => $value) {
-        
-           
-            $user = new User();
 
-            $user->setId($value['id']);
-            $user->setName($value['name']);
-            $user->setEmail($value['email']);
-            $user->setCreatedAt($value['created_at']);
-            $user->setUpdatedAt($value['updated_at']);
-            $user->setUserTimezone($value['user_timezone']);
-            $user->setLocalTime();
-            $user->setAccountAge();
-            $userObjs[] = $user;
-        }
-
-        return $userObjs;
+        return $userArray;
     }
 }
